@@ -9,6 +9,7 @@ import {
   type ViewStyle,
 } from "react-native";
 
+import { GlassBorder } from "@/components/ui/glass-border";
 import { colors, fonts, radius, shadows, sizes, spacing, typography } from "@/theme";
 
 export type ButtonTone = "primary" | "secondary" | "danger";
@@ -23,6 +24,8 @@ type ButtonColors = {
   border?: string;
   content: string;
   shadow?: string;
+  // Draws the gradient glass rim instead of a flat border.
+  rim?: boolean;
 };
 
 type ButtonProps = Omit<PressableProps, "style" | "children"> & {
@@ -60,9 +63,9 @@ const palette: Record<ButtonTone, Record<ButtonVariant, { enabled: ButtonColors;
       enabled: { border: colors.primary, content: colors.primary },
       disabled: { border: colors.primaryMuted, content: colors.primaryDisabledText },
     },
-    // Not on the sheet: the auth screens' submit buttons (Continue with Email, Sign up, Sign In).
+    // Figma "Primary Glass": the auth submit buttons and the scenario card's Start pill.
     tonal: {
-      enabled: { background: colors.primaryMuted, border: colors.hairline, content: colors.primary, shadow: shadows.glowPrimary },
+      enabled: { background: colors.primaryMuted, content: colors.primary, shadow: shadows.glowPrimary, rim: true },
       disabled: { background: colors.primaryTint, border: colors.hairline, content: colors.primaryDisabledText },
     },
     glass: { enabled: glass, disabled: glassDisabled },
@@ -154,6 +157,8 @@ export function Button({
   const tint = getButtonColors(tone, variant, isDisabled);
   const metrics = sizeStyles[size];
   const isText = variant === "text";
+  // Figma's Primary Glass uses the 16pt radius at the large size.
+  const borderRadius = variant === "tonal" && size === "lg" ? radius.lg : metrics.box.borderRadius;
 
   return (
     <Pressable
@@ -165,6 +170,7 @@ export function Button({
         metrics.box,
         isText && styles.flush,
         {
+          borderRadius,
           backgroundColor: tint.background ?? "transparent",
           borderColor: tint.border ?? "transparent",
           boxShadow: tint.shadow,
@@ -176,6 +182,7 @@ export function Button({
       ]}
       {...rest}
     >
+      {tint.rim ? <GlassBorder radius={borderRadius} /> : null}
       {leftIcon?.({ color: tint.content, size: metrics.icon })}
       <Text
         numberOfLines={1}

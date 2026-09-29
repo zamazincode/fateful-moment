@@ -1,7 +1,7 @@
 import { render, screen, userEvent } from "@testing-library/react-native";
 
 import { Button, getButtonColors } from "@/components/ui/button";
-import { colors, fonts, shadows, sizes } from "@/theme";
+import { colors, fonts, radius, shadows, sizes } from "@/theme";
 
 describe("Button", () => {
   it("renders an accessible button with its title", async () => {
@@ -68,6 +68,24 @@ describe("Button", () => {
       paddingHorizontal: 0,
       backgroundColor: "transparent",
     });
+  });
+
+  it("gives the tonal variant a glass rim instead of a flat border", async () => {
+    await render(<Button title="Sign In" variant="tonal" />);
+
+    expect(screen.getByRole("button")).toHaveStyle({
+      backgroundColor: colors.primaryMuted,
+      borderColor: "transparent",
+      borderRadius: radius.lg,
+    });
+    expect(screen.getByTestId("glass-border")).toBeOnTheScreen();
+  });
+
+  it("drops the glass rim when the tonal variant is disabled", async () => {
+    await render(<Button title="Sign In" variant="tonal" disabled />);
+
+    expect(screen.getByRole("button")).toHaveStyle({ borderColor: colors.hairline });
+    expect(screen.queryByTestId("glass-border")).not.toBeOnTheScreen();
   });
 
   it("renders the danger tone with its glow", async () => {
