@@ -1,0 +1,24 @@
+import Svg, { Path } from "react-native-svg";
+
+import { colors } from "@/theme";
+
+type IconProps = {
+  size?: number;
+  color?: string;
+};
+
+// Source: Figma export (closed-eye.svg). The export's clip path matched the
+// viewBox, so it is dropped.
+export function EyeOffIcon({ size = 18, color = colors.textMuted }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 18 18" fill="none">
+      <Path
+        d="M8.04964 3.807C9.79668 3.5988 11.5638 3.96811 13.0813 4.85854C14.5987 5.74896 15.7831 7.11156 16.4534 8.73825C16.5159 8.90664 16.5159 9.09186 16.4534 9.26025C16.1778 9.9285 15.8135 10.5566 15.3704 11.1277M10.5629 10.6185C10.1385 11.0284 9.57018 11.2551 8.98024 11.25C8.3903 11.2449 7.82597 11.0083 7.4088 10.5911C6.99163 10.1739 6.755 9.6096 6.74987 9.01965C6.74475 8.42971 6.97153 7.86136 7.38139 7.437M13.1091 13.1243C12.1143 13.7136 11.0042 14.082 9.85441 14.2045C8.70458 14.3271 7.54185 14.2008 6.44511 13.8344C5.34837 13.468 4.34329 12.8699 3.49805 12.0808C2.65281 11.2917 1.98721 10.33 1.54639 9.261C1.48389 9.09261 1.48389 8.90739 1.54639 8.739C2.21136 7.12639 3.3814 5.77294 4.88089 4.88175M1.49989 1.5L16.4999 16.5"
+        stroke={color}
+        strokeWidth={1.66591}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
