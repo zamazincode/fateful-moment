@@ -1,8 +1,10 @@
 import * as SecureStore from "expo-secure-store";
 
 import {
+  changePassword,
   clearSession,
   createAccount,
+  deleteAccount,
   loadSession,
   saveSession,
   verifyCredentials,
@@ -75,5 +77,47 @@ describe("account storage", () => {
     await SecureStore.setItemAsync("session.user", "{not json");
 
     expect(await loadSession()).toBeNull();
+  });
+
+  it("changes the password after checking the current one", async () => {
+    await createAccount("John Doe", "johndoe@mail.com", "Johndoe1");
+
+    expect(await changePassword("johndoe@mail.com", "Johndoe1", "Newpass12")).toEqual({ ok: true });
+
+    expect(await verifyCredentials("johndoe@mail.com", "Johndoe1")).toEqual({ ok: false, reason: "wrong-password" });
+    expect((await verifyCredentials("johndoe@mail.com", "Newpass12")).ok).toBe(true);
+  });
+
+  it("re-salts the account when the password changes", async () => {
+    await createAccount("John Doe", "johndoe@mail.com", "Johndoe1");
+    const before = [...store.__dump().values()].join();
+
+    await changePassword("johndoe@mail.com", "Johndoe1", "Newpass12");
+
+    const salt = (dump: string) => JSON.parse(dump).salt;
+    expect(salt([...store.__dump().values()].join())).not.toBe(salt(before));
+  });
+
+  it("keeps the password on a wrong current password or unknown email", async () => {
+    await createAccount("John Doe", "johndoe@mail.com", "Johndoe1");
+
+    expect(await changePassword("johndoe@mail.com", "Wrong123", "Newpass12")).toEqual({
+      ok: false,
+      reason: "wrong-password",
+    });
+    expect(await changePassword("nobody@mail.com", "Johndoe1", "Newpass12")).toEqual({
+      ok: false,
+      reason: "unknown-email",
+    });
+    expect((await verifyCredentials("johndoe@mail.com", "Johndoe1")).ok).toBe(true);
+  });
+
+  it("deletes an account", async () => {
+    await createAccount("John Doe", "johndoe@mail.com", "Johndoe1");
+
+    await deleteAccount("JohnDoe@mail.com");
+
+    expect(await verifyCredentials("johndoe@mail.com", "Johndoe1")).toEqual({ ok: false, reason: "unknown-email" });
+    expect(store.__dump().size).toBe(0);
   });
 });

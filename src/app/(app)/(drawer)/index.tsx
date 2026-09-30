@@ -10,6 +10,7 @@ import { ScenarioList } from "@/components/scenarios/scenario-list";
 import { AppText } from "@/components/ui/app-text";
 import { ScreenTitle } from "@/components/ui/screen-title";
 import { scenarios } from "@/data/scenarios";
+import { haptics } from "@/lib/haptics";
 import { colors, spacing } from "@/theme";
 
 export default function Scenarios() {
@@ -21,6 +22,7 @@ export default function Scenarios() {
 
   function start(id: string) {
     if (selectedId) return;
+    haptics.start();
     setSelectedId(id);
     // Let the other cards fade before the briefing slides in.
     setTimeout(() => router.push({ pathname: "/scenario/[id]", params: { id } }), DIM_DURATION_MS);

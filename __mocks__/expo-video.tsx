@@ -7,6 +7,7 @@ type Listener = () => void;
 
 export class FakeVideoPlayer {
   private listeners = new Map<string, Set<Listener>>();
+  muted = false;
   play = jest.fn();
   pause = jest.fn();
 

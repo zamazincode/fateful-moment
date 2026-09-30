@@ -1,9 +1,9 @@
 import { StyleSheet, View } from "react-native";
 
-import { DnaPanel } from "@/components/dna/dna-panel";
-import { dnaBodyText } from "@/components/dna/dna-text";
+import { Panel } from "@/components/ui/panel";
 import { ActivityIcon } from "@/components/icons/activity-icon";
 import { AppText } from "@/components/ui/app-text";
+import { smallBodyText } from "@/components/ui/text-styles";
 import { fonts, sizes, spacing, typography } from "@/theme";
 
 type PatternDetectionProps = {
@@ -12,7 +12,7 @@ type PatternDetectionProps = {
 
 export function PatternDetection({ patterns }: PatternDetectionProps) {
   return (
-    <DnaPanel title="Pattern Detection" icon={<ActivityIcon size={sizes.icon} />}>
+    <Panel title="Pattern Detection" icon={<ActivityIcon size={sizes.icon} />}>
       <View style={styles.list}>
         {patterns.map((pattern, index) => (
           <View key={pattern} style={styles.row}>
@@ -25,7 +25,7 @@ export function PatternDetection({ patterns }: PatternDetectionProps) {
           </View>
         ))}
       </View>
-    </DnaPanel>
+    </Panel>
   );
 }
 
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     lineHeight: typography.label.lineHeight + 3,
   },
   text: {
-    ...dnaBodyText,
+    ...smallBodyText,
     flex: 1,
   },
 });

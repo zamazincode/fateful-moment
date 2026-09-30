@@ -1,11 +1,14 @@
 import { createContext, use, useEffect, useState, type PropsWithChildren } from "react";
 
 import {
+  changePassword,
   clearSession,
   createAccount,
+  deleteAccount,
   loadSession,
   saveSession,
   verifyCredentials,
+  type ChangePasswordResult,
   type CreateAccountResult,
   type User,
   type VerifyResult,
@@ -23,13 +26,16 @@ type Session = {
   // Dummy social sign in: there is no provider, it signs in a demo user.
   signInWithProvider: (provider: SocialProvider) => Promise<void>;
   signOut: () => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<ChangePasswordResult>;
+  // Removes the stored account (if any) and signs out.
+  deleteAccount: () => Promise<void>;
 };
 
 const SessionContext = createContext<Session | null>(null);
 
 const demoUsers: Record<SocialProvider, User> = {
-  apple: { name: "Apple User", email: "apple.demo@fatefulmoment.app" },
-  google: { name: "Google User", email: "google.demo@fatefulmoment.app" },
+  apple: { name: "Apple User", email: "apple.demo@fatefulmoment.app", provider: "apple" },
+  google: { name: "Google User", email: "google.demo@fatefulmoment.app", provider: "google" },
 };
 
 export function SessionProvider({ children }: PropsWithChildren) {
@@ -63,6 +69,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
     },
     signInWithProvider: (provider) => start(demoUsers[provider]),
     signOut: async () => {
+      await clearSession();
+      setUser(null);
+    },
+    changePassword: async (currentPassword, newPassword) => {
+      if (!user || user.provider) return { ok: false, reason: "unknown-email" };
+      return changePassword(user.email, currentPassword, newPassword);
+    },
+    deleteAccount: async () => {
+      if (user && !user.provider) await deleteAccount(user.email);
       await clearSession();
       setUser(null);
     },

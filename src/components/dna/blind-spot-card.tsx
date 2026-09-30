@@ -1,9 +1,9 @@
 import { StyleSheet, type StyleProp, type ViewStyle } from "react-native";
 
-import { DnaPanel } from "@/components/dna/dna-panel";
-import { dnaBodyText } from "@/components/dna/dna-text";
+import { Panel } from "@/components/ui/panel";
 import { TargetIcon } from "@/components/icons/target-icon";
 import { AppText } from "@/components/ui/app-text";
+import { smallBodyText } from "@/components/ui/text-styles";
 import { sizes, spacing } from "@/theme";
 
 type BlindSpotCardProps = {
@@ -15,7 +15,7 @@ type BlindSpotCardProps = {
 
 export function BlindSpotCard({ trait, question, description, style }: BlindSpotCardProps) {
   return (
-    <DnaPanel
+    <Panel
       title={`Blind Spot – ${trait}`}
       titleColor="danger"
       tone="danger"
@@ -26,12 +26,12 @@ export function BlindSpotCard({ trait, question, description, style }: BlindSpot
       <AppText color="textSecondary" style={[styles.text, styles.description]}>
         {description}
       </AppText>
-    </DnaPanel>
+    </Panel>
   );
 }
 
 const styles = StyleSheet.create({
-  text: dnaBodyText,
+  text: smallBodyText,
   description: {
     marginTop: spacing.xs,
   },

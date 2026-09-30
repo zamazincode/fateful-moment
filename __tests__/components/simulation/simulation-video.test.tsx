@@ -3,6 +3,7 @@ import * as video from "expo-video";
 import { AppState, type AppStateStatus } from "react-native";
 
 import { SimulationVideo } from "@/components/simulation/simulation-video";
+import { updateSettings } from "@/store/settings";
 
 const { players } = video as unknown as typeof import("../../../__mocks__/expo-video");
 
@@ -54,5 +55,14 @@ describe("SimulationVideo", () => {
     await screen.unmount();
 
     expect(removeListener).toHaveBeenCalled();
+  });
+
+  it("plays with sound unless video sound is off in Settings", async () => {
+    await render(<SimulationVideo source={1} onEnd={jest.fn()} />);
+    expect(players[0].muted).toBe(false);
+
+    updateSettings({ videoSound: false });
+    await render(<SimulationVideo source={2} onEnd={jest.fn()} />);
+    expect(players[1].muted).toBe(true);
   });
 });

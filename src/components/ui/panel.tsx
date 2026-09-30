@@ -4,23 +4,23 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { AppText } from "@/components/ui/app-text";
 import { colors, radius, spacing, type ColorToken } from "@/theme";
 
-type DnaPanelProps = {
+type PanelProps = {
   title: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   titleColor?: ColorToken;
   tone?: "default" | "danger";
   style?: StyleProp<ViewStyle>;
   children: ReactNode;
 };
 
-export function DnaPanel({
+export function Panel({
   title,
   icon,
   titleColor = "textSecondary",
   tone = "default",
   style,
   children,
-}: DnaPanelProps) {
+}: PanelProps) {
   return (
     <View style={[styles.panel, tone === "danger" && styles.danger, style]}>
       <View style={styles.header}>

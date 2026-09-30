@@ -7,15 +7,18 @@ import * as SecureStore from "expo-secure-store";
 export type User = {
   name: string;
   email: string;
+  // Set for the demo Apple/Google sign in, which has no stored account or password.
+  provider?: "apple" | "google";
 };
 
-type StoredAccount = User & {
+type StoredAccount = Omit<User, "provider"> & {
   salt: string;
   passwordHash: string;
 };
 
 export type CreateAccountResult = { ok: true; user: User } | { ok: false; reason: "email-taken" };
 export type VerifyResult = { ok: true; user: User } | { ok: false; reason: "unknown-email" | "wrong-password" };
+export type ChangePasswordResult = { ok: true } | { ok: false; reason: "unknown-email" | "wrong-password" };
 
 const SESSION_KEY = "session.user";
 
@@ -64,6 +67,28 @@ export async function verifyCredentials(email: string, password: string): Promis
     return { ok: false, reason: "wrong-password" };
   }
   return { ok: true, user: { name: account.name, email: account.email } };
+}
+
+export async function changePassword(
+  email: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<ChangePasswordResult> {
+  const account = await readAccount(email);
+  if (!account) return { ok: false, reason: "unknown-email" };
+  if ((await hashPassword(currentPassword, account.salt)) !== account.passwordHash) {
+    return { ok: false, reason: "wrong-password" };
+  }
+
+  // A new salt with every password, so an old hash never matches again.
+  const salt = createSalt();
+  const updated: StoredAccount = { ...account, salt, passwordHash: await hashPassword(newPassword, salt) };
+  await SecureStore.setItemAsync(await accountKey(email), JSON.stringify(updated));
+  return { ok: true };
+}
+
+export async function deleteAccount(email: string) {
+  await SecureStore.deleteItemAsync(await accountKey(email));
 }
 
 export async function saveSession(user: User) {

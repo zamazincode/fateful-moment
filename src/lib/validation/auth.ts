@@ -46,6 +46,16 @@ export const resetPasswordSchema = z.object({
   email: emailSchema,
 });
 
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Enter your current password."),
+    newPassword: passwordSchema,
+  })
+  .refine((values) => values.newPassword !== values.currentPassword, {
+    path: ["newPassword"],
+    message: "Choose a password different from the current one.",
+  });
+
 export type SignUpValues = z.infer<typeof signUpSchema>;
 export type SignInValues = z.infer<typeof signInSchema>;
 
@@ -56,4 +66,5 @@ export const authMessages = {
   // Unknown emails get a generic message so the form doesn't reveal which
   // addresses have an account.
   invalidCredentials: "Email or password is wrong.",
+  wrongCurrentPassword: "Your current password is wrong.",
 } as const;

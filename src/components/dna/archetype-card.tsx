@@ -1,8 +1,8 @@
 import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
 
-import { dnaBodyText } from "@/components/dna/dna-text";
 import { AppText } from "@/components/ui/app-text";
+import { smallBodyText } from "@/components/ui/text-styles";
 import type { Archetype } from "@/data/decision-dna";
 import { colors, radius, spacing } from "@/theme";
 
@@ -63,5 +63,5 @@ const styles = StyleSheet.create({
     borderLeftColor: `${colors.primaryStrong}66`,
     paddingLeft: spacing.xs,
   },
-  quoteText: dnaBodyText,
+  quoteText: smallBodyText,
 });

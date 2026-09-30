@@ -4,6 +4,7 @@ import { Text } from "react-native";
 
 import { tracks } from "@/data/tracks";
 import { MusicPlayerProvider, useMusicPlayer } from "@/store/music-player";
+import { getSettings, updateSettings } from "@/store/settings";
 
 // expo-audio resolves to the in-memory mock (__mocks__/expo-audio.ts), which
 // also exposes the playlists it has created.
@@ -109,5 +110,60 @@ describe("MusicPlayerProvider", () => {
     }
 
     await expect(render(<Orphan />)).rejects.toThrow("useMusicPlayer must be used inside MusicPlayerProvider");
+  });
+
+  it("remembers the user's play and pause for the next launch", async () => {
+    const player = await renderPlayer();
+
+    await act(() => player().play());
+    expect(getSettings().music).toBe(true);
+
+    await act(() => player().toggle());
+    expect(getSettings().music).toBe(false);
+  });
+
+  it("doesn't save the simulation's pause as a choice", async () => {
+    const player = await renderPlayer();
+    await act(() => player().play());
+
+    await act(() => player().suspend());
+
+    expect(getSettings().music).toBe(true);
+  });
+
+  it("starts on the saved track and plays if the music was on", async () => {
+    updateSettings({ trackIndex: 1, music: true });
+
+    await renderPlayer();
+
+    expect(playlists[0].skipTo).toHaveBeenCalledWith(1);
+    expect(playlists[0].play).toHaveBeenCalled();
+    expect(screen.getByText(`${tracks[1].title}|playing`)).toBeOnTheScreen();
+  });
+
+  it("remembers the track picked, skipped to or selected", async () => {
+    const player = await renderPlayer();
+
+    await act(() => player().next());
+    expect(getSettings().trackIndex).toBe(1);
+
+    await act(() => player().previous());
+    expect(getSettings().trackIndex).toBe(0);
+
+    await act(() => player().select(1));
+    expect(getSettings().trackIndex).toBe(1);
+  });
+
+  it("applies the saved volume and clamps new ones", async () => {
+    updateSettings({ musicVolume: 0.3 });
+    const player = await renderPlayer();
+
+    expect(playlists[0].volume).toBe(0.3);
+    expect(player().volume).toBe(0.3);
+
+    await act(() => player().setVolume(1.5));
+
+    expect(playlists[0].volume).toBe(1);
+    expect(getSettings().musicVolume).toBe(1);
   });
 });

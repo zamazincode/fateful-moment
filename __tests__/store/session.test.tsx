@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react-native";
 import * as SecureStore from "expo-secure-store";
 
-import { createAccount, loadSession, saveSession } from "@/services/account-storage";
+import { createAccount, loadSession, saveSession, verifyCredentials } from "@/services/account-storage";
 import { SessionProvider, useSession } from "@/store/session";
 
 const store = SecureStore as typeof SecureStore & { __reset: () => void };
@@ -86,5 +86,55 @@ describe("useSession", () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
 
     await expect(renderHook(() => useSession())).rejects.toThrow("useSession must be used inside SessionProvider");
+  });
+
+  it("marks demo users with their provider", async () => {
+    const { result } = await renderSession();
+
+    await act(() => result.current.signInWithProvider("apple"));
+
+    expect(result.current.user?.provider).toBe("apple");
+  });
+
+  it("changes the signed in user's password", async () => {
+    await createAccount("John Doe", "johndoe@mail.com", "Johndoe1");
+    const { result } = await renderSession();
+    await act(async () => {
+      await result.current.signIn("johndoe@mail.com", "Johndoe1");
+    });
+
+    let outcome;
+    await act(async () => {
+      outcome = await result.current.changePassword("Johndoe1", "Newpass12");
+    });
+
+    expect(outcome).toEqual({ ok: true });
+    expect((await verifyCredentials("johndoe@mail.com", "Newpass12")).ok).toBe(true);
+  });
+
+  it("has no password to change for a demo user", async () => {
+    const { result } = await renderSession();
+    await act(() => result.current.signInWithProvider("google"));
+
+    let outcome;
+    await act(async () => {
+      outcome = await result.current.changePassword("anything", "Newpass12");
+    });
+
+    expect(outcome).toEqual({ ok: false, reason: "unknown-email" });
+  });
+
+  it("deletes the account and signs out", async () => {
+    await createAccount("John Doe", "johndoe@mail.com", "Johndoe1");
+    const { result } = await renderSession();
+    await act(async () => {
+      await result.current.signIn("johndoe@mail.com", "Johndoe1");
+    });
+
+    await act(() => result.current.deleteAccount());
+
+    expect(result.current.user).toBeNull();
+    expect(await loadSession()).toBeNull();
+    expect(await verifyCredentials("johndoe@mail.com", "Johndoe1")).toEqual({ ok: false, reason: "unknown-email" });
   });
 });

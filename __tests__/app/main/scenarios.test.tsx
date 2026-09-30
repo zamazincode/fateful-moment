@@ -1,4 +1,5 @@
 import { act, render, screen, userEvent } from "@testing-library/react-native";
+import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import { Animated } from "react-native";
 
@@ -87,6 +88,17 @@ describe("Scenarios screen", () => {
       pathname: "/scenario/[id]",
       params: { id: "cuban-missile-crisis" },
     });
+  });
+
+  it("vibrates once when a scenario is started", async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+    await renderScreen();
+
+    await user.press(screen.getByRole("button", { name: "Start Iraq War" }));
+    await user.press(screen.getByRole("button", { name: "Start Cuban Missile Crisis (1962)" }));
+
+    expect(Haptics.impactAsync).toHaveBeenCalledTimes(1);
+    expect(Haptics.impactAsync).toHaveBeenCalledWith(Haptics.ImpactFeedbackStyle.Light);
   });
 
   it("ignores a second Start while the first one is on its way", async () => {

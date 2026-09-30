@@ -1,7 +1,7 @@
 import type { ComponentType } from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 
-import { DnaPanel } from "@/components/dna/dna-panel";
+import { Panel } from "@/components/ui/panel";
 import { RadarChart } from "@/components/dna/radar-chart";
 import { TraitStatCard } from "@/components/dna/trait-stat-card";
 import { AlertTriangleIcon } from "@/components/icons/alert-triangle-icon";
@@ -33,7 +33,7 @@ type PsychologicalMatrixProps = {
 
 export function PsychologicalMatrix({ scores, style }: PsychologicalMatrixProps) {
   return (
-    <DnaPanel
+    <Panel
       title="Psychological Matrix"
       titleColor="text"
       icon={<DnaIcon size={sizes.icon} color={colors.primary} />}
@@ -53,7 +53,7 @@ export function PsychologicalMatrix({ scores, style }: PsychologicalMatrixProps)
           ))}
         </View>
       </View>
-    </DnaPanel>
+    </Panel>
   );
 }
 

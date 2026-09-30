@@ -8,6 +8,7 @@ type Loop = "none" | "single" | "all";
 class FakePlaylist {
   currentIndex = 0;
   playing = false;
+  volume = 1;
   private listeners = new Set<() => void>();
 
   constructor(

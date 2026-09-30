@@ -18,6 +18,8 @@ beforeEach(() => {
     signUp: jest.fn(),
     signInWithProvider,
     signOut: jest.fn(),
+    changePassword: jest.fn(),
+    deleteAccount: jest.fn(),
   });
 });
 

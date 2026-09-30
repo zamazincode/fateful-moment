@@ -1,11 +1,13 @@
 import { act, fireEvent, render, screen, userEvent } from "@testing-library/react-native";
 import * as audio from "expo-audio";
+import * as Haptics from "expo-haptics";
 import * as video from "expo-video";
 
 import {
   FIRST_ROUND_MS,
   REVEAL_DELAY_MS,
   ScenarioSimulation,
+  WARNING_MS,
 } from "@/components/simulation/scenario-simulation";
 import { scenarios } from "@/data/scenarios";
 import { MusicPlayerProvider } from "@/store/music-player";
@@ -111,11 +113,11 @@ describe("ScenarioSimulation", () => {
     expect(playlists[0].playing).toBe(true);
   });
 
-  it("darkens the round background by half", async () => {
+  it("darkens the round background", async () => {
     await renderSimulation();
     await startAndReachFirstRound();
 
-    expect(screen.getByTestId("round-scrim")).toHaveStyle({ backgroundColor: "rgba(0, 0, 0, 0.5)" });
+    expect(screen.getByTestId("round-scrim")).toHaveStyle({ backgroundColor: "rgba(0, 0, 0, 0.7)" });
   });
 
   it("shows the timed first round after the intro", async () => {
@@ -178,5 +180,29 @@ describe("ScenarioSimulation", () => {
 
     await pickAndWatch(user, fourth);
     expect(onFinish).toHaveBeenCalledTimes(1);
+  });
+
+  it("vibrates when the simulation starts and on a pick, not on the timer", async () => {
+    await renderSimulation();
+    const user = await startAndReachFirstRound();
+    expect(Haptics.impactAsync).toHaveBeenLastCalledWith(Haptics.ImpactFeedbackStyle.Light);
+    jest.clearAllMocks();
+
+    await act(() => jest.advanceTimersByTime(FIRST_ROUND_MS - WARNING_MS));
+    expect(Haptics.impactAsync).not.toHaveBeenCalled();
+
+    await user.press(screen.getByRole("button", { name: first }));
+    expect(Haptics.impactAsync).toHaveBeenCalledWith(Haptics.ImpactFeedbackStyle.Medium);
+  });
+
+  it("stays still when the time runs out", async () => {
+    await renderSimulation();
+    await startAndReachFirstRound();
+    jest.clearAllMocks();
+
+    await act(() => jest.advanceTimersByTime(FIRST_ROUND_MS));
+
+    expect(Haptics.impactAsync).not.toHaveBeenCalled();
+    expect(Haptics.notificationAsync).not.toHaveBeenCalled();
   });
 });

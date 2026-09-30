@@ -3,6 +3,7 @@ import { useVideoPlayer, VideoView } from "expo-video";
 import { useEffect } from "react";
 import { AppState, StyleSheet, View } from "react-native";
 
+import { getSettings } from "@/store/settings";
 import { colors } from "@/theme";
 
 type SimulationVideoProps = {
@@ -13,7 +14,10 @@ type SimulationVideoProps = {
 // A full screen video without controls that starts on its own.
 // Render it with a `key` per video so every clip gets a fresh player.
 export function SimulationVideo({ source, onEnd }: SimulationVideoProps) {
-  const player = useVideoPlayer(source, (video) => video.play());
+  const player = useVideoPlayer(source, (video) => {
+    video.muted = !getSettings().videoSound;
+    video.play();
+  });
 
   useEventListener(player, "playToEnd", onEnd);
 

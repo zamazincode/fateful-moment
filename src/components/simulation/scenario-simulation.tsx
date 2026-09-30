@@ -7,12 +7,13 @@ import { AppHeader } from "@/components/navigation/app-header";
 import { BackArrowButton } from "@/components/navigation/back-arrow-button";
 import { ScenarioBriefing } from "@/components/scenarios/scenario-briefing";
 import { DangerVignette } from "@/components/simulation/danger-vignette";
-import { OptionGrid } from "@/components/simulation/option-grid";
 import type { OptionState } from "@/components/simulation/option-card";
+import { OptionGrid } from "@/components/simulation/option-grid";
 import { SimulationVideo } from "@/components/simulation/simulation-video";
 import { TimerBar } from "@/components/simulation/timer-bar";
 import type { Scenario } from "@/data/scenarios";
 import { useCountdown } from "@/hooks/use-countdown";
+import { haptics } from "@/lib/haptics";
 import { createSimulation, simulationReducer, unwatchedOptions } from "@/lib/simulation";
 import { useMusicPlayer } from "@/store/music-player";
 import { colors, spacing } from "@/theme";
@@ -20,7 +21,7 @@ import { colors, spacing } from "@/theme";
 export const FIRST_ROUND_MS = 15_000;
 export const WARNING_MS = 5_000;
 export const REVEAL_DELAY_MS = 600;
-const BACKGROUND_SCRIM = "rgba(0, 0, 0, 0.5)";
+const BACKGROUND_SCRIM = "rgba(0, 0, 0, 0.7)";
 
 type ScenarioSimulationProps = {
   scenario: Scenario;
@@ -30,7 +31,11 @@ type ScenarioSimulationProps = {
 
 export function ScenarioSimulation({ scenario, onExit, onFinish }: ScenarioSimulationProps) {
   const insets = useSafeAreaInsets();
-  const [state, dispatch] = useReducer(simulationReducer, scenario.options.length, createSimulation);
+  const [state, dispatch] = useReducer(
+    simulationReducer,
+    scenario.options.length,
+    createSimulation,
+  );
   const { phase, picked, watched } = state;
   const { media } = scenario;
   const { suspend, resume } = useMusicPlayer();
@@ -81,7 +86,10 @@ export function ScenarioSimulation({ scenario, onExit, onFinish }: ScenarioSimul
           title={scenario.title}
           description={scenario.briefing}
           cover={media.cover}
-          onStart={() => dispatch({ type: "start" })}
+          onStart={() => {
+            haptics.start();
+            dispatch({ type: "start" });
+          }}
           style={[styles.briefing, { marginHorizontal: margin }]}
         />
       </View>
@@ -89,10 +97,15 @@ export function ScenarioSimulation({ scenario, onExit, onFinish }: ScenarioSimul
   }
 
   if (phase.kind === "video") {
-    const source = phase.video === "intro" ? media.videos.intro : media.videos.decisions[phase.video];
+    const source =
+      phase.video === "intro" ? media.videos.intro : media.videos.decisions[phase.video];
     return (
       <View style={styles.screen}>
-        <SimulationVideo key={String(phase.video)} source={source} onEnd={() => dispatch({ type: "videoEnded" })} />
+        <SimulationVideo
+          key={String(phase.video)}
+          source={source}
+          onEnd={() => dispatch({ type: "videoEnded" })}
+        />
         {backButton}
       </View>
     );
@@ -120,14 +133,20 @@ export function ScenarioSimulation({ scenario, onExit, onFinish }: ScenarioSimul
           stateOf={stateOf}
           yourChoice={timed ? null : watched[0]}
           disabled={picked !== null}
-          onPick={(index) => dispatch({ type: "pick", index })}
+          onPick={(index) => {
+            haptics.choose();
+            dispatch({ type: "pick", index });
+          }}
         />
       </View>
 
       {timed ? (
         <TimerBar
           progress={progress}
-          style={[styles.timer, { left: insets.left + spacing.lg, right: insets.right + spacing.lg }]}
+          style={[
+            styles.timer,
+            { left: insets.left + spacing.lg, right: insets.right + spacing.lg },
+          ]}
         />
       ) : null}
       {backButton}
