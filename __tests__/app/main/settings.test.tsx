@@ -15,6 +15,8 @@ jest.mock("react-native-safe-area-context", () => require("react-native-safe-are
 jest.mock("expo-router", () => ({
   router: { push: jest.fn() },
   useNavigation: () => ({ dispatch: jest.fn() }),
+  // Runs like a screen that is focused on mount and blurred on unmount.
+  useFocusEffect: (callback: () => () => void) => require("react").useEffect(callback, [callback]),
 }));
 jest.mock("@/store/session", () => ({ useSession: jest.fn() }));
 

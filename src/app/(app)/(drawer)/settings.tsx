@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import { useRef } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -12,6 +13,7 @@ import { VolumeControl } from "@/components/settings/volume-control";
 import { Button } from "@/components/ui/button";
 import { Panel } from "@/components/ui/panel";
 import { ScreenTitle } from "@/components/ui/screen-title";
+import { useScrollResetOnLeave } from "@/hooks/use-scroll-reset-on-leave";
 import { useMusicPlayer } from "@/store/music-player";
 import { useSession } from "@/store/session";
 import { updateSettings, useSettings } from "@/store/settings";
@@ -19,6 +21,8 @@ import { colors, spacing } from "@/theme";
 
 export default function Settings() {
   const insets = useSafeAreaInsets();
+  const scrollRef = useRef<ScrollView>(null);
+  useScrollResetOnLeave(scrollRef);
   const { user, signOut, deleteAccount } = useSession();
   const player = useMusicPlayer();
   const settings = useSettings();
@@ -39,6 +43,7 @@ export default function Settings() {
       <AppHeader left={<MenuButton />} />
 
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={[
           styles.content,
           {

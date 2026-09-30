@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -9,11 +10,14 @@ import { AppHeader } from "@/components/navigation/app-header";
 import { MenuButton } from "@/components/navigation/menu-button";
 import { ScreenTitle } from "@/components/ui/screen-title";
 import { archetypes, decisionDna } from "@/data/decision-dna";
+import { useScrollResetOnLeave } from "@/hooks/use-scroll-reset-on-leave";
 import { lowestTrait } from "@/lib/decision-dna";
 import { colors, spacing } from "@/theme";
 
 export default function DecisionDna() {
   const insets = useSafeAreaInsets();
+  const scrollRef = useRef<ScrollView>(null);
+  useScrollResetOnLeave(scrollRef);
   const { archetype, quote, scores, patterns, blindSpot } = decisionDna;
   const blindSpotTrait = lowestTrait(scores);
 
@@ -22,6 +26,7 @@ export default function DecisionDna() {
       <AppHeader left={<MenuButton />} />
 
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={[
           styles.content,
           {
