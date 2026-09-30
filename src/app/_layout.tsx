@@ -3,6 +3,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { SessionProvider, useSession } from "@/store/session";
 import { colors, fontAssets } from "@/theme";
@@ -11,10 +13,13 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   return (
-    <SessionProvider>
-      <StatusBar style="light" />
-      <RootNavigator />
-    </SessionProvider>
+    // The side menu's swipe gesture needs the gesture handler root.
+    <GestureHandlerRootView style={styles.root}>
+      <SessionProvider>
+        <StatusBar style="light" />
+        <RootNavigator />
+      </SessionProvider>
+    </GestureHandlerRootView>
   );
 }
 
@@ -39,12 +44,19 @@ function RootNavigator() {
         contentStyle: { backgroundColor: colors.background },
       }}
     >
+      {/* Auth is designed portrait and the app landscape; switching groups turns the screen. */}
       <Stack.Protected guard={!!user}>
-        <Stack.Screen name="(app)" />
+        <Stack.Screen name="(app)" options={{ orientation: "landscape" }} />
       </Stack.Protected>
       <Stack.Protected guard={!user}>
-        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(auth)" options={{ orientation: "portrait" }} />
       </Stack.Protected>
     </Stack>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+});

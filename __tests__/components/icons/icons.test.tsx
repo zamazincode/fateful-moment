@@ -6,12 +6,15 @@ import { AppleIcon } from "@/components/icons/apple-icon";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon";
 import { CheckCircleIcon } from "@/components/icons/check-circle-icon";
 import { CheckOutlineIcon } from "@/components/icons/check-outline-icon";
+import { CompassIcon } from "@/components/icons/compass-icon";
+import { DnaIcon } from "@/components/icons/dna-icon";
 import { EyeIcon } from "@/components/icons/eye-icon";
 import { EyeOffIcon } from "@/components/icons/eye-off-icon";
 import { GoogleIcon } from "@/components/icons/google-icon";
 import { MailIcon } from "@/components/icons/mail-icon";
 import { MenuIcon } from "@/components/icons/menu-icon";
 import { NextTrackIcon } from "@/components/icons/next-track-icon";
+import { PauseIcon } from "@/components/icons/pause-icon";
 import { PlayIcon } from "@/components/icons/play-icon";
 import { PlaylistIcon } from "@/components/icons/playlist-icon";
 import { PreviousTrackIcon } from "@/components/icons/previous-track-icon";
@@ -64,6 +67,9 @@ describe("icons", () => {
     ["check outline", CheckOutlineIcon, colors.primary, "stroke"],
     ["alarm clock", AlarmClockIcon, colors.primary, "fill"],
     ["play", PlayIcon, colors.primary, "fill"],
+    ["pause", PauseIcon, colors.primary, "fill"],
+    ["compass", CompassIcon, colors.primary, "stroke"],
+    ["dna", DnaIcon, colors.textSecondary, "stroke"],
     ["playlist", PlaylistIcon, colors.textMuted, "stroke"],
     ["menu", MenuIcon, colors.textSecondary, "stroke"],
     ["settings", SettingsIcon, colors.textSecondary, "stroke"],

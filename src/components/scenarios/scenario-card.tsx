@@ -16,7 +16,9 @@ const START_HEIGHT = 32;
 export const DIMMED_OPACITY = 0.35;
 
 // The cover fades into the background so the text on it stays readable.
-const COVER_SCRIM = `linear-gradient(to bottom, ${colors.background}4D, ${colors.background}F2)`;
+// Stops fitted by comparing the design screenshot with the cover image:
+// 25% at the top, half way at 30%, nearly opaque from 45% down.
+const COVER_SCRIM = `linear-gradient(to bottom, ${colors.background}40 0%, ${colors.background}80 30%, ${colors.background}F2 45%, ${colors.background} 100%)`;
 
 type ScenarioCardProps = {
   title: string;

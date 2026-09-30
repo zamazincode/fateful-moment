@@ -15,7 +15,8 @@ const DESCRIPTION_OPACITY = 0.85;
 // label: 12pt padding above and below the 24pt line instead of the 58pt height.
 const START_HEIGHT = spacing.sm * 2 + typography.button.lineHeight;
 
-const COVER_SCRIM = `linear-gradient(to bottom, ${colors.background}59, ${colors.background})`;
+// Fitted against the cover image: clear at the top, the background at the bottom.
+const COVER_SCRIM = `linear-gradient(to bottom, ${colors.background}00, ${colors.background})`;
 
 type ScenarioBriefingProps = {
   title: string;
