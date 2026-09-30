@@ -1,6 +1,7 @@
 import { useEventListener } from "expo";
 import { useVideoPlayer, VideoView } from "expo-video";
-import { StyleSheet, View } from "react-native";
+import { useEffect } from "react";
+import { AppState, StyleSheet, View } from "react-native";
 
 import { colors } from "@/theme";
 
@@ -15,6 +16,15 @@ export function SimulationVideo({ source, onEnd }: SimulationVideoProps) {
   const player = useVideoPlayer(source, (video) => video.play());
 
   useEventListener(player, "playToEnd", onEnd);
+
+  // expo-video pauses in the background but doesn't resume a view without controls; a finished
+  // clip has already unmounted this, so resuming is always safe.
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") player.play();
+    });
+    return () => subscription.remove();
+  }, [player]);
 
   return (
     <View testID="simulation-video" style={[StyleSheet.absoluteFill, styles.container]}>
