@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react-native";
 import { processColor } from "react-native";
 
+import { AlarmClockIcon } from "@/components/icons/alarm-clock-icon";
 import { AppleIcon } from "@/components/icons/apple-icon";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon";
 import { CheckCircleIcon } from "@/components/icons/check-circle-icon";
@@ -9,6 +10,12 @@ import { EyeIcon } from "@/components/icons/eye-icon";
 import { EyeOffIcon } from "@/components/icons/eye-off-icon";
 import { GoogleIcon } from "@/components/icons/google-icon";
 import { MailIcon } from "@/components/icons/mail-icon";
+import { MenuIcon } from "@/components/icons/menu-icon";
+import { NextTrackIcon } from "@/components/icons/next-track-icon";
+import { PlayIcon } from "@/components/icons/play-icon";
+import { PlaylistIcon } from "@/components/icons/playlist-icon";
+import { PreviousTrackIcon } from "@/components/icons/previous-track-icon";
+import { SettingsIcon } from "@/components/icons/settings-icon";
 import { colors, palette } from "@/theme";
 
 type Node = { type: string; props: Record<string, any>; children: Node[] | null };
@@ -55,6 +62,11 @@ describe("icons", () => {
     ["eye off", EyeOffIcon, colors.textMuted, "stroke"],
     ["check circle", CheckCircleIcon, colors.textSecondary, "fill"],
     ["check outline", CheckOutlineIcon, colors.primary, "stroke"],
+    ["alarm clock", AlarmClockIcon, colors.primary, "fill"],
+    ["play", PlayIcon, colors.primary, "fill"],
+    ["playlist", PlaylistIcon, colors.textMuted, "stroke"],
+    ["menu", MenuIcon, colors.textSecondary, "stroke"],
+    ["settings", SettingsIcon, colors.textSecondary, "stroke"],
   ] as const)("paints the %s icon with its default color and a given one", async (_, Icon, defaultColor, paint) => {
     const byDefault = await renderIcon(<Icon />);
     expect(byDefault.paths.every((path) => path.props[paint].payload === processColor(defaultColor))).toBe(true);
@@ -62,6 +74,19 @@ describe("icons", () => {
     const tinted = await renderIcon(<Icon color={colors.primary} size={12} />);
     expect(tinted.svg.props).toMatchObject({ width: 12, height: 12 });
     expect(tinted.paths.every((path) => path.props[paint].payload === processColor(colors.primary))).toBe(true);
+  });
+
+  it.each([
+    ["previous track", PreviousTrackIcon],
+    ["next track", NextTrackIcon],
+  ] as const)("keeps the 16x14 shape of the %s icon", async (_, Icon) => {
+    const byDefault = await renderIcon(<Icon />);
+    expect(byDefault.svg.props).toMatchObject({ width: 16, height: 14 });
+    expect(byDefault.paths.every((path) => path.props.stroke.payload === processColor(colors.textMuted))).toBe(true);
+
+    const tinted = await renderIcon(<Icon size={32} color={colors.text} />);
+    expect(tinted.svg.props).toMatchObject({ width: 32, height: 28 });
+    expect(tinted.paths.every((path) => path.props.stroke.payload === processColor(colors.text))).toBe(true);
   });
 
   it("draws the four-color google logo at the given size", async () => {
