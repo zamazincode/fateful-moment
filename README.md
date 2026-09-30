@@ -8,6 +8,8 @@ Karar simülasyonu uygulaması "Fateful Moment"in React Native (Expo) ile yapıl
 
 **Android**
 
+https://github.com/user-attachments/assets/e7c9e332-27df-4021-ad13-dde83ba69022
+
 ## APK
 
 Son sürüm: [Releases](https://github.com/zamazincode/fateful-moment/releases)
