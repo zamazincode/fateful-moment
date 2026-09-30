@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react-native";
 
 import DecisionDna from "@/app/(app)/(drawer)/dna";
-import { decisionDna } from "@/data/decision-dna";
+import { decisionDna, traits } from "@/data/decision-dna";
 import { MusicPlayerProvider } from "@/store/music-player";
 
 jest.mock("react-native-safe-area-context", () => require("react-native-safe-area-context/jest/mock").default);
@@ -43,6 +43,16 @@ describe("Decision DNA screen", () => {
     expect(screen.getByText("Blind Spot – Ethics")).toBeOnTheScreen();
     expect(screen.getByText(decisionDna.blindSpot.question)).toBeOnTheScreen();
     expect(screen.getByText(decisionDna.blindSpot.description)).toBeOnTheScreen();
+  });
+
+  it("draws the radar chart from the DNA scores", async () => {
+    await renderScreen();
+
+    const summary = traits.map((trait) => `${trait.label} ${decisionDna.scores[trait.id]}`).join(", ");
+    expect(screen.getByLabelText(`Radar chart: ${summary}`)).toBeOnTheScreen();
+    traits.forEach((trait) =>
+      expect(screen.getByLabelText(`${trait.label} ${decisionDna.scores[trait.id]}`)).toBeOnTheScreen(),
+    );
   });
 
   it("uses the corrected scenario count", async () => {

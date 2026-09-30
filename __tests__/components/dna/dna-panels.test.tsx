@@ -28,6 +28,18 @@ describe("PsychologicalMatrix", () => {
     }
   });
 
+  it("redraws for new scores", async () => {
+    const scores = { vision: 10, courage: 20, risk: 30, control: 40, empathy: 50, ethics: 60 };
+    const view = await render(<PsychologicalMatrix scores={decisionDna.scores} />);
+
+    await view.rerender(<PsychologicalMatrix scores={scores} />);
+
+    expect(
+      screen.getByLabelText("Radar chart: Vision 10, Courage 20, Risk 30, Control 40, Empathy 50, Ethics 60"),
+    ).toBeOnTheScreen();
+    expect(screen.getByLabelText("Ethics 60")).toBeOnTheScreen();
+  });
+
   it("feeds the same scores to the radar chart", async () => {
     await render(<PsychologicalMatrix scores={decisionDna.scores} />);
 

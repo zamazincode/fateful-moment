@@ -80,4 +80,42 @@ describe("RadarChart", () => {
     const spread = (points: number[][]) => points[3][1] - points[0][1];
     expect(spread(narrow)).toBeLessThan(spread(wide));
   });
+
+  it("clamps values outside 0 to 100", async () => {
+    const outOfRange = [
+      { label: "A", value: 150 },
+      { label: "B", value: -20 },
+      { label: "C", value: Number.NaN },
+      { label: "D", value: 150 },
+    ];
+    await render(<RadarChart axes={outOfRange} />);
+    await fireEvent(screen.getByLabelText("Radar chart: A 100, B 0, C 0, D 100"), "layout", {
+      nativeEvent: { layout: { width: 200, height: 150, x: 0, y: 0 } },
+    });
+
+    const [a, b, c, d] = valuePoints();
+    // B and C sit on the center; A (up) and D (left) sit on the outer ring.
+    expect(b).toEqual(c);
+    expect(b[1] - a[1]).toBeCloseTo(b[0] - d[0]);
+  });
+
+  it("draws any number of axes", async () => {
+    const five = axes.slice(0, 5);
+    await render(<RadarChart axes={five} />);
+    await fireEvent(screen.getByLabelText("Radar chart: Vision 88, Courage 82, Risk 79, Control 55, Empathy 38"), "layout", {
+      nativeEvent: { layout: { width: 200, height: 150, x: 0, y: 0 } },
+    });
+
+    expect(valuePoints()).toHaveLength(5);
+    five.forEach((axis) => expect(screen.getByText(axis.label)).toBeOnTheScreen());
+  });
+
+  it("draws nothing with fewer than three axes", async () => {
+    await render(<RadarChart axes={axes.slice(0, 2)} />);
+    await fireEvent(screen.getByLabelText("Radar chart: Vision 88, Courage 82"), "layout", {
+      nativeEvent: { layout: { width: 200, height: 150, x: 0, y: 0 } },
+    });
+
+    expect(screen.queryByTestId("radar-values")).toBeNull();
+  });
 });

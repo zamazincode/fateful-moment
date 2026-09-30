@@ -19,13 +19,25 @@ const LABEL_HEIGHT = labelStyle.lineHeight!;
 
 export type RadarAxis = {
   label: string;
-  // 0 to 100.
+  // 0 to 100; anything outside is clamped.
   value: number;
 };
 
 type RadarChartProps = {
+  // At least three, clockwise from the top.
   axes: RadarAxis[];
 };
+
+function clamp(value: number) {
+  return Number.isFinite(value) ? Math.min(Math.max(value, 0), 100) : 0;
+}
+
+function directions(count: number) {
+  return Array.from({ length: count }, (_, index) => {
+    const angle = -Math.PI / 2 + (index * 2 * Math.PI) / count;
+    return { cos: Math.cos(angle), sin: Math.sin(angle) };
+  });
+}
 
 // Fills its container and shrinks the chart to fit the space left beside the stat grid.
 export function RadarChart({ axes }: RadarChartProps) {
@@ -36,34 +48,44 @@ export function RadarChart({ axes }: RadarChartProps) {
     setSpace({ width, height });
   }
 
-  const radius = space
-    ? Math.min(
-        MAX_RADIUS,
-        (space.width / 2 - LABEL_GAP - LABEL_WIDTH) / Math.cos(Math.PI / 6),
-        space.height / 2 - LABEL_GAP - LABEL_HEIGHT,
-      )
-    : 0;
+  const units = directions(axes.length);
+  const reachX = Math.max(...units.map((unit) => Math.abs(unit.cos)));
+  const reachY = Math.max(...units.map((unit) => Math.abs(unit.sin)));
+  const radius =
+    space && axes.length >= 3
+      ? Math.min(
+          MAX_RADIUS,
+          (space.width / 2 - LABEL_GAP - LABEL_WIDTH) / reachX,
+          (space.height / 2 - LABEL_GAP - LABEL_HEIGHT) / reachY,
+        )
+      : 0;
 
-  const summary = axes.map((axis) => `${axis.label} ${axis.value}`).join(", ");
+  const summary = axes.map((axis) => `${axis.label} ${clamp(axis.value)}`).join(", ");
 
   return (
     <View style={styles.container} onLayout={measure} accessible accessibilityLabel={`Radar chart: ${summary}`}>
-      {radius > 0 && <Chart axes={axes} radius={radius} />}
+      {radius > 0 && <Chart axes={axes} radius={radius} reach={{ x: reachX, y: reachY }} />}
     </View>
   );
 }
 
-function Chart({ axes, radius }: RadarChartProps & { radius: number }) {
-  const width = 2 * (radius * Math.cos(Math.PI / 6) + LABEL_GAP + LABEL_WIDTH);
-  const height = 2 * (radius + LABEL_GAP + LABEL_HEIGHT);
+type ChartProps = RadarChartProps & {
+  radius: number;
+  // How far the axes reach sideways and up/down, as a share of the radius.
+  reach: { x: number; y: number };
+};
+
+function Chart({ axes, radius, reach }: ChartProps) {
+  const width = 2 * (radius * reach.x + LABEL_GAP + LABEL_WIDTH);
+  const height = 2 * (radius * reach.y + LABEL_GAP + LABEL_HEIGHT);
   const cx = width / 2;
   const cy = height / 2;
-  const angles = axes.map((_, index) => -Math.PI / 2 + (index * 2 * Math.PI) / axes.length);
+  const units = directions(axes.length);
 
-  const point = (angle: number, distance: number) =>
-    [cx + distance * Math.cos(angle), cy + distance * Math.sin(angle)] as const;
+  const point = (index: number, distance: number) =>
+    [cx + distance * units[index].cos, cy + distance * units[index].sin] as const;
   const polygon = (distanceAt: (index: number) => number) =>
-    angles.map((angle, index) => point(angle, distanceAt(index)).join(",")).join(" ");
+    units.map((_, index) => point(index, distanceAt(index)).join(",")).join(" ");
 
   return (
     <View style={{ width, height }}>
@@ -77,13 +99,13 @@ function Chart({ axes, radius }: RadarChartProps & { radius: number }) {
             strokeWidth={0.75}
           />
         ))}
-        {angles.map((angle) => {
-          const [x, y] = point(angle, radius);
-          return <Line key={angle} x1={cx} y1={cy} x2={x} y2={y} stroke={colors.border} strokeWidth={0.75} />;
+        {units.map((_, index) => {
+          const [x, y] = point(index, radius);
+          return <Line key={index} x1={cx} y1={cy} x2={x} y2={y} stroke={colors.border} strokeWidth={0.75} />;
         })}
         <Polygon
           testID="radar-values"
-          points={polygon((index) => (radius * axes[index].value) / 100)}
+          points={polygon((index) => (radius * clamp(axes[index].value)) / 100)}
           fill={colors.primaryStrong}
           fillOpacity={0.4}
           stroke={colors.primaryStrong}
@@ -93,18 +115,17 @@ function Chart({ axes, radius }: RadarChartProps & { radius: number }) {
       </Svg>
 
       {axes.map((axis, index) => {
-        const angle = angles[index];
-        const [x, y] = point(angle, radius + LABEL_GAP);
-        const cos = Math.cos(angle);
+        const { cos, sin } = units[index];
+        const [x, y] = point(index, radius + LABEL_GAP);
         const centered = Math.abs(cos) < 0.01;
         const position = centered
-          ? { left: x - LABEL_WIDTH / 2, top: Math.sin(angle) < 0 ? y - LABEL_HEIGHT : y }
+          ? { left: x - LABEL_WIDTH / 2, top: sin < 0 ? y - LABEL_HEIGHT : y }
           : { left: cos > 0 ? x : x - LABEL_WIDTH, top: y - LABEL_HEIGHT / 2 };
         const textAlign = centered ? "center" : cos > 0 ? "left" : "right";
 
         return (
           <AppText
-            key={axis.label}
+            key={index}
             color="textMuted"
             numberOfLines={1}
             style={[styles.label, labelStyle, position, { textAlign }]}
