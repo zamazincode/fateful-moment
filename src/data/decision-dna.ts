@@ -106,14 +106,14 @@ export type DecisionDna = {
   // 0 to 100 per trait.
   scores: Record<TraitId, number>;
   patterns: string[];
+  // Its trait isn't stored: it is always the lowest score (see lowestTrait).
   blindSpot: {
-    trait: TraitId;
     question: string;
     description: string;
   };
 };
 
-// Static for now; later this is meant to be built from the choices made in the simulation.
+// Demo data. Later the choices made in the simulation go to an AI analysis that returns this.
 export const decisionDna: DecisionDna = {
   archetype: "brave-visionary",
   quote:
@@ -132,7 +132,6 @@ export const decisionDna: DecisionDna = {
     "When ethics conflict with interests, your tendency is clear: you choose the interest. This pattern repeated in 5 out of 6 scenarios. It works in the short term — but creates erosion of trust in the long term.",
   ],
   blindSpot: {
-    trait: "ethics",
     question: "How much will you pay to win?",
     description:
       "Your vision and courage are strong — but your ethics score is your lowest dimension. While reaching big goals, you often overlook how those around you feel and what they sacrifice. Your leadership capacity is high, but the mark you leave is not always positive.",

@@ -25,14 +25,6 @@ describe("decision DNA data", () => {
     expect(Object.keys(archetypes)).toHaveLength(12);
   });
 
-  it("puts the blind spot on the lowest trait", () => {
-    const lowest = traits.reduce((low, trait) =>
-      decisionDna.scores[trait.id] < decisionDna.scores[low.id] ? trait : low,
-    );
-
-    expect(decisionDna.blindSpot.trait).toBe(lowest.id);
-  });
-
   it("has the three detected patterns", () => {
     expect(decisionDna.patterns).toHaveLength(3);
   });

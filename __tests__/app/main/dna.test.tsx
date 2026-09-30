@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react-native";
 
 import DecisionDna from "@/app/(app)/(drawer)/dna";
 import { decisionDna, traits } from "@/data/decision-dna";
+import { lowestTrait } from "@/lib/decision-dna";
 import { MusicPlayerProvider } from "@/store/music-player";
 
 jest.mock("react-native-safe-area-context", () => require("react-native-safe-area-context/jest/mock").default);
@@ -40,7 +41,7 @@ describe("Decision DNA screen", () => {
     expect(screen.getByLabelText("Ethics 31")).toBeOnTheScreen();
     expect(screen.getByText("Pattern Detection")).toBeOnTheScreen();
     decisionDna.patterns.forEach((pattern) => expect(screen.getByText(pattern)).toBeOnTheScreen());
-    expect(screen.getByText("Blind Spot – Ethics")).toBeOnTheScreen();
+    expect(screen.getByText(`Blind Spot – ${lowestTrait(decisionDna.scores).label}`)).toBeOnTheScreen();
     expect(screen.getByText(decisionDna.blindSpot.question)).toBeOnTheScreen();
     expect(screen.getByText(decisionDna.blindSpot.description)).toBeOnTheScreen();
   });

@@ -8,13 +8,14 @@ import { PsychologicalMatrix } from "@/components/dna/psychological-matrix";
 import { AppHeader } from "@/components/navigation/app-header";
 import { MenuButton } from "@/components/navigation/menu-button";
 import { ScreenTitle } from "@/components/ui/screen-title";
-import { archetypes, decisionDna, traits } from "@/data/decision-dna";
+import { archetypes, decisionDna } from "@/data/decision-dna";
+import { lowestTrait } from "@/lib/decision-dna";
 import { colors, spacing } from "@/theme";
 
 export default function DecisionDna() {
   const insets = useSafeAreaInsets();
   const { archetype, quote, scores, patterns, blindSpot } = decisionDna;
-  const blindSpotTrait = traits.find((trait) => trait.id === blindSpot.trait)!;
+  const blindSpotTrait = lowestTrait(scores);
 
   return (
     <View style={styles.screen}>
