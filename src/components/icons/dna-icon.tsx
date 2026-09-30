@@ -7,7 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (dna.svg).
 export function DnaIcon({ size = 20, color = colors.textSecondary }: IconProps) {
   const stroke = { stroke: color, strokeWidth: 1.24208, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 

@@ -80,6 +80,27 @@ describe("MusicPlayerProvider", () => {
     expect(screen.getByText(`${tracks[1].title}|playing`)).toBeOnTheScreen();
   });
 
+  it("pauses for a video and resumes the music that was playing", async () => {
+    const player = await renderPlayer();
+    await act(() => player().play());
+
+    await act(() => player().suspend());
+    expect(screen.getByText(`${tracks[0].title}|paused`)).toBeOnTheScreen();
+
+    await act(() => player().resume());
+    expect(screen.getByText(`${tracks[0].title}|playing`)).toBeOnTheScreen();
+  });
+
+  it("stays quiet after a video if the music was off before it", async () => {
+    const player = await renderPlayer();
+
+    await act(() => player().suspend());
+    await act(() => player().resume());
+
+    expect(playlists[0].play).not.toHaveBeenCalled();
+    expect(screen.getByText(`${tracks[0].title}|paused`)).toBeOnTheScreen();
+  });
+
   it("refuses to be used outside the provider", async () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     function Orphan() {

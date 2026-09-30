@@ -7,7 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (playlist.svg).
 export function PlaylistIcon({ size = 14, color = colors.textMuted }: IconProps) {
   const stroke = { stroke: color, strokeWidth: 1.16492, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 

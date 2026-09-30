@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "@/store/session";
 import { colors, spacing } from "@/theme";
 
-// Temporary until Settings is designed; for now it is where you sign out.
 export default function Settings() {
   const insets = useSafeAreaInsets();
   const { user, signOut } = useSession();

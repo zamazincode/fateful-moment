@@ -26,6 +26,14 @@ describe("scenarios", () => {
     }
   });
 
+  it("gives every scenario five options, one per decision video", () => {
+    for (const scenario of scenarios) {
+      expect(scenario.options).toHaveLength(5);
+      expect(scenario.options).toHaveLength(scenario.media.videos.decisions.length);
+      expect(new Set(scenario.options).size).toBe(scenario.options.length);
+    }
+  });
+
   it("starts with the two scenarios from the design", () => {
     expect(scenarios.slice(0, 2).map((scenario) => scenario.title)).toEqual([
       "Iraq War",

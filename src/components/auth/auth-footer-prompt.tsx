@@ -9,7 +9,6 @@ type AuthFooterPromptProps = {
   onPress: () => void;
 };
 
-// "Already have an account? Sign in" at the bottom of the email auth screens.
 export function AuthFooterPrompt({ prompt, action, onPress }: AuthFooterPromptProps) {
   return (
     <View style={styles.row}>

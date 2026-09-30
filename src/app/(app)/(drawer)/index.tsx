@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppHeader } from "@/components/navigation/app-header";
 import { MenuButton } from "@/components/navigation/menu-button";
+import { DIM_DURATION_MS } from "@/components/scenarios/scenario-card";
 import { ScenarioList } from "@/components/scenarios/scenario-list";
 import { AppText } from "@/components/ui/app-text";
 import { scenarios } from "@/data/scenarios";
@@ -13,6 +15,15 @@ export default function Scenarios() {
   const insets = useSafeAreaInsets();
   const gutter = insets.left + spacing.lg;
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useFocusEffect(useCallback(() => setSelectedId(null), []));
+
+  function start(id: string) {
+    if (selectedId) return;
+    setSelectedId(id);
+    // Let the other cards fade before the briefing slides in.
+    setTimeout(() => router.push({ pathname: "/scenario/[id]", params: { id } }), DIM_DURATION_MS);
+  }
 
   return (
     <View style={styles.screen}>
@@ -32,7 +43,7 @@ export default function Scenarios() {
         <ScenarioList
           scenarios={scenarios}
           selectedId={selectedId}
-          onStart={(scenario) => setSelectedId(scenario.id)}
+          onStart={(scenario) => start(scenario.id)}
           inset={gutter}
         />
       </View>
@@ -49,7 +60,6 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
     paddingBottom: spacing.xs,
   },
-  // Plain bold at the heading3 size: the design's page title isn't italic caps.
   title: {
     fontFamily: fonts.bold,
     fontSize: typography.heading3.fontSize,

@@ -9,7 +9,6 @@ import { spacing } from "@/theme";
 
 const ICON_SIZE = 18;
 
-// TextField with a show/hide toggle.
 export function PasswordField(props: Omit<TextFieldProps, "secureTextEntry" | "accessory">) {
   const [visible, setVisible] = useState(false);
 

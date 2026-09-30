@@ -5,17 +5,15 @@ import { AppText } from "@/components/ui/app-text";
 import { Button } from "@/components/ui/button";
 import { colors, fonts, spacing, typography } from "@/theme";
 
-// Figma scenario briefing container: 24pt corners, content centered on the cover.
 const BRIEFING_RADIUS = 24;
-// Wide enough for two lines of the design's placeholder text.
 const DESCRIPTION_MAX_WIDTH = 496;
-// Description is the text color at 85% (measured), softer than the title.
+// Measured: the description is the text color at 85%.
 const DESCRIPTION_OPACITY = 0.85;
 // Start Simulation keeps the large button's text and radius but hugs its
 // label: 12pt padding above and below the 24pt line instead of the 58pt height.
 const START_HEIGHT = spacing.sm * 2 + typography.button.lineHeight;
 
-// Fitted against the cover image: clear at the top, the background at the bottom.
+// Fitted against the cover image: clear at the top, solid at the bottom.
 const COVER_SCRIM = `linear-gradient(to bottom, ${colors.background}00, ${colors.background})`;
 
 type ScenarioBriefingProps = {

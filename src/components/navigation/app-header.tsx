@@ -6,12 +6,9 @@ import { MusicPlayer, PLAYER_HEIGHT } from "@/components/player/music-player";
 import { colors, spacing } from "@/theme";
 
 type AppHeaderProps = {
-  // The menu button on the list, a back button on the briefing.
   left: ReactNode;
 };
 
-// The top bar of the scenario screens: a button on the left, the music
-// player hanging from the top right corner and a hairline across the screen.
 export function AppHeader({ left }: AppHeaderProps) {
   const insets = useSafeAreaInsets();
 

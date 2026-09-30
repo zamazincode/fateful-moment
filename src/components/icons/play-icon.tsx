@@ -7,7 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (play.svg).
 export function PlayIcon({ size = 16, color = colors.primary }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 16 16" fill="none">

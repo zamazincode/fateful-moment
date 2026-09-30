@@ -7,8 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (closed-eye.svg). The export's clip path matched the
-// viewBox, so it is dropped.
 export function EyeOffIcon({ size = 18, color = colors.textMuted }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 18 18" fill="none">

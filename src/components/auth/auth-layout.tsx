@@ -9,8 +9,6 @@ type AuthLayoutProps = {
   footer?: ReactNode;
 };
 
-// Portrait auth scaffold: the content scrolls above the keyboard and the
-// footer stays pinned to the bottom when there is room.
 export function AuthLayout({ children, footer }: AuthLayoutProps) {
   return (
     <Screen padded={false}>

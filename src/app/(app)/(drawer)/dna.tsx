@@ -5,7 +5,6 @@ import { MenuButton } from "@/components/navigation/menu-button";
 import { AppText } from "@/components/ui/app-text";
 import { colors, spacing } from "@/theme";
 
-// Placeholder until the static Decision DNA page is built from its screenshot.
 export default function DecisionDna() {
   const insets = useSafeAreaInsets();
 

@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SIDE_MENU_WIDTH, SideMenu } from "@/components/navigation/side-menu";
 import { colors } from "@/theme";
 
-// Measured: the panel is the background at 95%. The overlay dims the screen behind it.
 const PANEL_BACKGROUND = `${colors.background}F2`;
 const OVERLAY = `${colors.background}99`;
 

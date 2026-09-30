@@ -12,11 +12,9 @@ import { TrackList } from "@/components/player/track-list";
 import { useMusicPlayer } from "@/store/music-player";
 import { colors, fonts, radius, shadows, spacing, typography } from "@/theme";
 
-// Figma music player: a 48pt pill hanging from the top right corner, 288pt
-// wide plus the right safe area, which it extends into.
+// The pill runs into the right safe area, so that inset is added to its width.
 export const PLAYER_HEIGHT = 48;
 const PLAYER_WIDTH = 288;
-// Controls sit in 32pt boxes; play is a glowing ring of the same size.
 const CONTROL_SIZE = 32;
 // Measured: surface at 80%, and the play ring's cyan at 12% fill / 50% border.
 const PLAYER_BACKGROUND = `${colors.surface}CC`;
@@ -135,7 +133,6 @@ const styles = StyleSheet.create({
   nowPlaying: {
     flex: 1,
   },
-  // Track titles are bold caps at the caption size in the design.
   title: {
     fontFamily: fonts.bold,
     fontSize: typography.caption.fontSize,

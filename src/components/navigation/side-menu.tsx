@@ -8,7 +8,6 @@ import { SettingsIcon } from "@/components/icons/settings-icon";
 import { AppText } from "@/components/ui/app-text";
 import { colors, radius, shadows, spacing } from "@/theme";
 
-// Figma side menu: 256pt panel, 46pt items stacked in the vertical middle.
 export const SIDE_MENU_WIDTH = 256;
 const ITEM_HEIGHT = 46;
 // Measured: the active item is cyan at 10% with a 35% border.

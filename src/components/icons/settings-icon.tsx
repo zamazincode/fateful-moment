@@ -7,7 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (settings.svg).
 export function SettingsIcon({ size = 20, color = colors.textSecondary }: IconProps) {
   const stroke = { stroke: color, strokeWidth: 1.66664, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 

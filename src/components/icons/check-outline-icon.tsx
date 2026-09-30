@@ -7,7 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (check-outline.svg).
 export function CheckOutlineIcon({ size = 40, color = colors.primary }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 40 40" fill="none">

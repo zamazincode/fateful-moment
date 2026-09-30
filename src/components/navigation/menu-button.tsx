@@ -4,7 +4,6 @@ import { Pressable, StyleSheet, type StyleProp, type ViewStyle } from "react-nat
 
 import { MenuIcon } from "@/components/icons/menu-icon";
 
-// The 20pt icon in a 40pt touch target, the same size as the back button.
 const MENU_BUTTON_SIZE = 40;
 
 type MenuButtonProps = {

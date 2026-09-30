@@ -48,7 +48,6 @@ export default function CheckEmail() {
 }
 
 const styles = StyleSheet.create({
-  // Same spot as the back button in the logo screens' hero.
   back: {
     alignSelf: "flex-start",
     marginTop: -spacing.md,

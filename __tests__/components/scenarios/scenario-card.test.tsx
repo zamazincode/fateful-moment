@@ -1,6 +1,7 @@
 import { render, screen, userEvent } from "@testing-library/react-native";
+import { Animated } from "react-native";
 
-import { DIMMED_OPACITY, ScenarioCard } from "@/components/scenarios/scenario-card";
+import { DIM_DURATION_MS, DIMMED_OPACITY, ScenarioCard } from "@/components/scenarios/scenario-card";
 import { colors, radius } from "@/theme";
 
 const cover = { uri: "https://example.com/cover.jpg" };
@@ -57,13 +58,28 @@ describe("ScenarioCard", () => {
     });
   });
 
-  it("fades to 35% while another scenario is selected", async () => {
+  // Jest mocks the native animation module, so native driven values never
+  // move there; the test checks what the fade was asked to do instead.
+  it("fades to 35% while another scenario is selected, and back", async () => {
+    const timing = jest.spyOn(Animated, "timing");
     const { rerender } = await renderCard();
-    expect(screen.getByTestId("scenario-card")).not.toHaveStyle({ opacity: DIMMED_OPACITY });
+    expect(screen.getByTestId("scenario-card")).toHaveStyle({ opacity: 1 });
 
-    await rerender(
-      <ScenarioCard title="Iraq War" summary="Summary" duration={97} cover={cover} dimmed />,
-    );
-    expect(screen.getByTestId("scenario-card")).toHaveStyle({ opacity: 0.35 });
+    await rerender(<ScenarioCard title="Iraq War" summary="Summary" duration={97} cover={cover} dimmed />);
+    expect(timing).toHaveBeenLastCalledWith(expect.anything(), {
+      toValue: DIMMED_OPACITY,
+      duration: DIM_DURATION_MS,
+      useNativeDriver: true,
+    });
+
+    await rerender(<ScenarioCard title="Iraq War" summary="Summary" duration={97} cover={cover} />);
+    expect(timing).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ toValue: 1 }));
+    timing.mockRestore();
+  });
+
+  it("starts dimmed without a fade when mounted while another scenario is selected", async () => {
+    await render(<ScenarioCard title="Iraq War" summary="Summary" duration={97} cover={cover} dimmed />);
+
+    expect(screen.getByTestId("scenario-card")).toHaveStyle({ opacity: DIMMED_OPACITY });
   });
 });

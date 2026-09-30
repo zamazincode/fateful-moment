@@ -7,7 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (alarm-clock.svg).
 export function AlarmClockIcon({ size = 12, color = colors.primary }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 12 12" fill="none">

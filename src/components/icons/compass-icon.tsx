@@ -7,7 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (discover.svg), the Scenarios menu item.
 export function CompassIcon({ size = 20, color = colors.primary }: IconProps) {
   const stroke = { stroke: color, strokeWidth: 1.66664, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 

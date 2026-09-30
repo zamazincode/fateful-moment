@@ -7,8 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (apple.svg). The export's clip path matched the
-// viewBox, so it is dropped.
 export function AppleIcon({ size = 22, color = palette.white }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 22 22" fill="none">

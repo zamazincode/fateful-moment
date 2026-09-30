@@ -6,7 +6,6 @@ import { spacing } from "@/theme";
 
 type ScenarioListProps = {
   scenarios: Scenario[];
-  // While a scenario is selected the other cards fade out.
   selectedId?: string | null;
   onStart: (scenario: Scenario) => void;
   // Left inset so the first card lines up with the titles above.

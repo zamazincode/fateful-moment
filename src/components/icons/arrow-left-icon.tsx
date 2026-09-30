@@ -7,7 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (back.svg).
 export function ArrowLeftIcon({ size = 20, color = colors.textSecondary }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 20 20" fill="none">

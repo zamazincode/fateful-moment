@@ -44,7 +44,6 @@ function RootNavigator() {
         contentStyle: { backgroundColor: colors.background },
       }}
     >
-      {/* Auth is designed portrait and the app landscape; switching groups turns the screen. */}
       <Stack.Protected guard={!!user}>
         <Stack.Screen name="(app)" options={{ orientation: "landscape" }} />
       </Stack.Protected>

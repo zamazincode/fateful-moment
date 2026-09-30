@@ -1,5 +1,5 @@
 import { setAudioModeAsync, useAudioPlaylist, useAudioPlaylistStatus } from "expo-audio";
-import { createContext, use, useEffect, type PropsWithChildren } from "react";
+import { createContext, use, useEffect, useRef, type PropsWithChildren } from "react";
 
 import { tracks, type Track } from "@/data/tracks";
 
@@ -13,18 +13,21 @@ type MusicPlayer = {
   next: () => void;
   previous: () => void;
   select: (index: number) => void;
+  // Pause for the simulation; resume only plays again if the music was on before.
+  suspend: () => void;
+  resume: () => void;
 };
 
 const MusicPlayerContext = createContext<MusicPlayer | null>(null);
 
 const sources = tracks.map((track) => track.source);
 
-// One playlist for the whole signed in area, so the music keeps going from the
-// Scenarios list into the simulation. It starts paused ("standby") and loops.
-// Mounted in the (app) layout: signing out unmounts it and releases the player.
+// Mounted in the (app) layout so one playlist spans every signed in screen;
+// signing out unmounts it and releases the player.
 export function MusicPlayerProvider({ children }: PropsWithChildren) {
   const playlist = useAudioPlaylist({ sources, loop: "all" });
   const status = useAudioPlaylistStatus(playlist);
+  const suspendedWhilePlaying = useRef(false);
 
   useEffect(() => {
     setAudioModeAsync({ playsInSilentMode: true });
@@ -42,6 +45,14 @@ export function MusicPlayerProvider({ children }: PropsWithChildren) {
     select: (index) => {
       playlist.skipTo(index);
       playlist.play();
+    },
+    suspend: () => {
+      suspendedWhilePlaying.current = status.playing;
+      if (status.playing) playlist.pause();
+    },
+    resume: () => {
+      if (suspendedWhilePlaying.current) playlist.play();
+      suspendedWhilePlaying.current = false;
     },
   };
 

@@ -12,7 +12,6 @@ type AuthTitleProps = {
   subtitle?: ReactNode;
 };
 
-// Centered heading used across the auth screens.
 export function AuthTitle({ title, subtitle }: AuthTitleProps) {
   return (
     <View style={styles.heading}>
@@ -29,11 +28,9 @@ export function AuthTitle({ title, subtitle }: AuthTitleProps) {
 }
 
 type AuthHeroProps = AuthTitleProps & {
-  // Rendered in the top-left corner, level with the logo (the back button).
   leading?: ReactNode;
 };
 
-// Logo and heading shared by the welcome, sign in, sign up and reset screens.
 export function AuthHero({ title, subtitle, leading }: AuthHeroProps) {
   return (
     <View style={styles.hero}>

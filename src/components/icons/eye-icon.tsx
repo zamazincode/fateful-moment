@@ -7,7 +7,6 @@ type IconProps = {
   color?: string;
 };
 
-// Source: Figma export (eye.svg).
 export function EyeIcon({ size = 18, color = colors.textMuted }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 18 18" fill="none">
