@@ -1,16 +1,20 @@
 import { render } from "@testing-library/react-native";
 import { processColor } from "react-native";
 
+import { ActivityIcon } from "@/components/icons/activity-icon";
 import { AlarmClockIcon } from "@/components/icons/alarm-clock-icon";
+import { AlertTriangleIcon } from "@/components/icons/alert-triangle-icon";
 import { AppleIcon } from "@/components/icons/apple-icon";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon";
 import { CheckCircleIcon } from "@/components/icons/check-circle-icon";
 import { CheckOutlineIcon } from "@/components/icons/check-outline-icon";
+import { CogIcon } from "@/components/icons/cog-icon";
 import { CompassIcon } from "@/components/icons/compass-icon";
 import { DnaIcon } from "@/components/icons/dna-icon";
 import { EyeIcon } from "@/components/icons/eye-icon";
 import { EyeOffIcon } from "@/components/icons/eye-off-icon";
 import { GoogleIcon } from "@/components/icons/google-icon";
+import { HeartIcon } from "@/components/icons/heart-icon";
 import { MailIcon } from "@/components/icons/mail-icon";
 import { MenuIcon } from "@/components/icons/menu-icon";
 import { NextTrackIcon } from "@/components/icons/next-track-icon";
@@ -18,7 +22,10 @@ import { PauseIcon } from "@/components/icons/pause-icon";
 import { PlayIcon } from "@/components/icons/play-icon";
 import { PlaylistIcon } from "@/components/icons/playlist-icon";
 import { PreviousTrackIcon } from "@/components/icons/previous-track-icon";
+import { ScaleIcon } from "@/components/icons/scale-icon";
 import { SettingsIcon } from "@/components/icons/settings-icon";
+import { TargetIcon } from "@/components/icons/target-icon";
+import { ZapIcon } from "@/components/icons/zap-icon";
 import { colors, palette } from "@/theme";
 
 type Node = { type: string; props: Record<string, any>; children: Node[] | null };
@@ -73,6 +80,13 @@ describe("icons", () => {
     ["playlist", PlaylistIcon, colors.textMuted, "stroke"],
     ["menu", MenuIcon, colors.textSecondary, "stroke"],
     ["settings", SettingsIcon, colors.textSecondary, "stroke"],
+    ["activity", ActivityIcon, colors.primary, "fill"],
+    ["cog", CogIcon, colors.textMuted, "fill"],
+    ["zap", ZapIcon, colors.textMuted, "stroke"],
+    ["alert triangle", AlertTriangleIcon, colors.textMuted, "stroke"],
+    ["heart", HeartIcon, colors.textMuted, "stroke"],
+    ["scale", ScaleIcon, colors.textMuted, "stroke"],
+    ["target", TargetIcon, colors.danger, "stroke"],
   ] as const)("paints the %s icon with its default color and a given one", async (_, Icon, defaultColor, paint) => {
     const byDefault = await renderIcon(<Icon />);
     expect(byDefault.paths.every((path) => path.props[paint].payload === processColor(defaultColor))).toBe(true);

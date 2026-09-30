@@ -8,8 +8,9 @@ import { MenuButton } from "@/components/navigation/menu-button";
 import { DIM_DURATION_MS } from "@/components/scenarios/scenario-card";
 import { ScenarioList } from "@/components/scenarios/scenario-list";
 import { AppText } from "@/components/ui/app-text";
+import { ScreenTitle } from "@/components/ui/screen-title";
 import { scenarios } from "@/data/scenarios";
-import { colors, fonts, spacing, typography } from "@/theme";
+import { colors, spacing } from "@/theme";
 
 export default function Scenarios() {
   const insets = useSafeAreaInsets();
@@ -30,7 +31,7 @@ export default function Scenarios() {
       <AppHeader left={<MenuButton />} />
 
       <View style={[styles.intro, { paddingLeft: gutter, paddingRight: insets.right + spacing.lg }]}>
-        <AppText style={styles.title}>Scenarios</AppText>
+        <ScreenTitle>Scenarios</ScreenTitle>
         <AppText variant="overline" color="primary" style={styles.subtitle}>
           Choose A Scenario And Ask Yourself, &quot;If You Were In That Situation, What Would You Do?&quot;
         </AppText>
@@ -59,11 +60,6 @@ const styles = StyleSheet.create({
   intro: {
     paddingTop: spacing.md,
     paddingBottom: spacing.xs,
-  },
-  title: {
-    fontFamily: fonts.bold,
-    fontSize: typography.heading3.fontSize,
-    lineHeight: typography.heading3.lineHeight,
   },
   // Bold mono in the design. The mono family is a system font, so a weight is safe here.
   subtitle: {
